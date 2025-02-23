@@ -1,0 +1,23 @@
+{
+  "name": "sentio",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000S\u0000e\u0000n\u0000t\u0000i\u0000o\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.9",
+    "postgres": "^3.4.5",
+    "sequelize": "^6.37.5",
+    "supabase": "^2.12.1"
+  }
+}
