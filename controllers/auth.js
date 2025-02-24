@@ -20,8 +20,9 @@ const signup = async (req, res) => {
         `
 
         const user = newUser[0]
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const token = jwt.sign({ id: user.id, name: user.full_name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
+        res.redirect('/patients')
         return res.status(200).json({ message: "Signup successful", user, token })
 
     } catch (error) {
@@ -49,15 +50,16 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "Invalid password" })
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const token = jwt.sign({ id: user.id, name:user.full_name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" })
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         })
+        
+        res.redirect('/patients')
 
-        return res.json({ message: "Login successful", token })
 
     } catch (error) {
         console.error("Login Error:", error)

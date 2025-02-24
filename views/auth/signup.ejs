@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2E3440;
+            font-family: 'Roboto', sans-serif;
+            color: #D8DEE9;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #3B4252;
+            color: #D8DEE9;
+        }
+        .card-header {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color: #81A1C1;
+            color: #2E3440;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-control {
+            background-color: #4C566A;
+            color: #D8DEE9;
+            border: 1px solid #D8DEE9;
+        }
+        .form-control::placeholder {
+            color: #D8DEE9;
+        }
+        .btn-primary {
+            background-color: #81A1C1;
+            border-color: #81A1C1;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #5E81AC;
+            border-color: #5E81AC;
+        }
+        .card-footer {
+            background-color: #3B4252;
+        }
+        .text-primary {
+            color: #81A1C1 !important;
+        }
+        .text-primary:hover {
+            color: #5E81AC !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mt-5">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">Signup</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/auth/signup" method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-block">Signup</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <small>Already have an account? <a href="/auth/login" class="text-primary">Login</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

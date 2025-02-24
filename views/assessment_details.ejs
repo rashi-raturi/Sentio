@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= assessment.assessment_name%></title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2E3440;
+            color: #D8DEE9;
+        }
+        .container {
+            background-color: #3B4252;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            background-color: #4C566A;
+            color: #D8DEE9;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #81A1C1;
+            color: #2E3440;
+        }
+        .btn-primary {
+            background-color: #81A1C1;
+            border-color: #81A1C1;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #5E81AC;
+            border-color: #5E81AC;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0 text-center"><%= assessment.assessment_name %></h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Patient ID:</strong> <%= assessment.patient_id %></p>
+                <p><strong>Psychologist ID:</strong> <%= assessment.psychologist_id %></p>
+                <p><strong>Score:</strong> <%= assessment.score %></p>
+                <p><strong>Created At:</strong> <%= new Date(assessment.created_at).toLocaleString() %></p>
+            </div>
+        </div>
+        <a href="/patients/details/<%= assessment.patient_id %>" class="btn btn-primary mt-4">Back to Patient</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html></div></html>

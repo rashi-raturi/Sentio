@@ -1,7 +1,8 @@
 const sql = require("../config/db.js")
 
 const createPatient = async (req, res) => {
-    const { psychologist_id, full_name, date_of_birth, gender, contact_info } = req.body
+    let { psychologist_id, full_name, date_of_birth, gender, contact_info, diagnosis } = req.body
+    if(!diagnosis) diagnosis = "undiagnosed"
 
     try {
         const psychResult = await sql`SELECT id FROM psychologists WHERE id = ${psychologist_id}`
@@ -10,8 +11,8 @@ const createPatient = async (req, res) => {
         }
 
         const newPatient = await sql`
-            INSERT INTO patients (psychologist_id, full_name, date_of_birth, gender, contact_info)
-            VALUES (${psychologist_id}, ${full_name}, ${date_of_birth}, ${gender}, ${contact_info})
+            INSERT INTO patients (psychologist_id, full_name, date_of_birth, gender, contact_info, diagnosis)
+            VALUES (${psychologist_id}, ${full_name}, ${date_of_birth}, ${gender}, ${contact_info}, ${diagnosis})
             RETURNING *
         `
 
@@ -23,13 +24,13 @@ const createPatient = async (req, res) => {
     }
 }
 
-const getPatientsByPsychologist = async (req, res) => {
-    const { psychologist_id } = req.params
+const getAllPatients = async (req, res) => {
+    const psychologist_id = req.user.id
 
     try {
-        const patients = await sql`SELECT * FROM patients WHERE psychologist_id = ${psychologist_id}`
+        const result = await sql`SELECT * FROM patients WHERE psychologist_id = ${psychologist_id}`
 
-        res.json({ patients })
+        res.render('home', { patients: result, user:req.user})
 
     } catch (error) {
         console.error("Error retrieving patients:", error)
@@ -41,13 +42,14 @@ const getPatientById = async (req, res) => {
     const { id } = req.params
 
     try {
-        const patient = await sql`SELECT * FROM patients WHERE id = ${id}`
+        const patientResult = await sql`SELECT * FROM patients WHERE id = ${id}`
+        const assessmentResult = await sql`SELECT * FROM assessments WHERE patient_id = ${id}`
 
-        if (patient.length === 0) {
+        if (patientResult.length === 0) {
             return res.status(404).json({ message: "Patient not found" })
         }
 
-        res.json({ patient: patient[0] })
+        res.render('patient', { patient: patientResult[0], title: '', assessments: assessmentResult })
 
     } catch (error) {
         console.error("Error retrieving patient:", error)
@@ -57,12 +59,12 @@ const getPatientById = async (req, res) => {
 
 const updatePatient = async (req, res) => {
     const { id } = req.params
-    const { full_name, date_of_birth, gender, contact_info } = req.body
+    const { full_name, date_of_birth, gender, contact_info, diagnosis } = req.body
 
     try {
         const updatedPatient = await sql`
             UPDATE patients
-            SET full_name = ${full_name}, date_of_birth = ${date_of_birth}, gender = ${gender}, contact_info = ${contact_info}
+            SET full_name = ${full_name}, date_of_birth = ${date_of_birth}, gender = ${gender}, contact_info = ${contact_info}, diagnosis = ${diagnosis}
             WHERE id = ${id}
             RETURNING *
         `
@@ -99,7 +101,7 @@ const deletePatient = async (req, res) => {
 
 module.exports = {
     createPatient,
-    getPatientsByPsychologist,
+    getAllPatients,
     getPatientById,
     updatePatient,
     deletePatient

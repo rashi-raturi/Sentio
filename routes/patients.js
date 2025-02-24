@@ -1,23 +1,27 @@
 const express = require("express")
 const {
     createPatient,
-    getPatientsByPsychologist,
+    getAllPatients,
     getPatientById,
     updatePatient,
-    deletePatient
+    deletePatient,
 } = require("../controllers/patient")
 
-const authMiddleware = require('../services/authentication')
+const authMiddleware = require('../middlewares/authentication')
 
 const router = express.Router()
 
-router.route("/").post(authMiddleware, createPatient)
+router.route("/add-patient").post(authMiddleware, createPatient)
 
-router.route("/:psychologist_id").get(authMiddleware, getPatientsByPsychologist)
+router.route("/").get(authMiddleware, (req,res,next)=>{
+    req.title = ''
+    next()
+} , getAllPatients)
 
-router.route("/:id")
-    .get(authMiddleware, getPatientById)
-    .put(authMiddleware, updatePatient)
-    .delete(authMiddleware, deletePatient)
+
+router.route("/:id").put(authMiddleware, updatePatient).delete(authMiddleware, deletePatient)
+
+
+router.route("/details/:id").get(authMiddleware, getPatientById)
 
 module.exports = router

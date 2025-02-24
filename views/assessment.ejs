@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2E3440;
+            color: #D8DEE9;
+        }
+        .card {
+            background-color: #3B4252;
+            border-radius: 10px;
+        }
+        .form-control, .form-check-input {
+            background-color: #4C566A;
+            color: #D8DEE9;
+            border: 1px solid #D8DEE9;
+        }
+        .btn-primary {
+            background-color: #81A1C1;
+            border-color: #81A1C1;
+        }
+        .btn-primary:hover {
+            background-color: #5E81AC;
+            border-color: #5E81AC;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .form-check-label {
+            margin-left: 5px;
+        }
+        .form-range {
+            background-color: #4C566A;
+        }
+        .description {
+            margin-bottom: 1rem; /* Adjust this value to reduce the space */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <% if (typeof questions === 'undefined') { %>
+            <p class="text-center text-light">Questions variable is not defined.</p>
+        <% } else if (questions.length > 0) { %>
+            <form id="dynamic-form" action="/submit" method="POST" class="card p-4 shadow">
+                <h2 class="text-center mb-4"><%= title %></h2>
+                <p class="text-center text-light description"><%= description %></p>
+                <hr>
+                <% questions.forEach((question, index) => { %>
+                    <div class="mb-4">
+                        <label class="form-label text-light"><%= question.question %></label>
+                        <% if (question.type === "multiple_choice") { %>
+                            <% question.options.forEach(option => { %>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" name="q<%= index %>" value="<%= option %>" required>
+                                    <label class="form-check-label text-light"><%= option %></label>
+                                </div>
+                            <% }); %>
+                        <% } else if (question.type === "scale") { %>
+                            <input type="range" class="form-range" name="q<%= index %>" min="<%= question.scale_min %>" max="<%= question.scale_max %>" required>
+                            <div class="d-flex justify-content-between text-light">
+                                <small><%= question.scale_label_min %></small>
+                                <small><%= question.scale_label_max %></small>
+                            </div>
+                        <% } else if (question.type === "text") { %>
+                            <textarea class="form-control" name="q<%= index %>" placeholder="<%= question.placeholder %>" required></textarea>
+                        <% } %>
+                    </div>
+                <% }); %>
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
+            </form>
+        <% } else { %>
+            <p class="text-center text-light">No questions available.</p>
+        <% } %>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
