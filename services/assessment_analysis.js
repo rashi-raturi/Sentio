@@ -1,33 +1,37 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai")
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require('dotenv').config();
 
-const apiKey = process.env.GEMINI_API_KEY
-const genAI = new GoogleGenerativeAI(apiKey)
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash-thinking-exp-01-21",
-  systemInstruction: `Task:
-You are an AI assistant analyzing mental health screening responses based on clinically recognized tools (PHQ-9, GAD-7, ASRS-5). Your role is to:
+    model: "gemini-2.0-flash-thinking-exp-01-21",
+    systemInstruction: `Task:
+You are an AI assistant analyzing mental health screening responses based on clinically recognized tools to help professsional psychologists in their diagnosis of the patients.. Your role is to:
 
 Evaluate responses based on scoring guidelines.
-Identify severity levels and flag cases if necessary.
+Identify severity levels.
 Assess if further diagnostic testing is required.
 Provide actionable insights for psychologists.
 Format the results into JSON for database storage.
-Generate a structured LaTeX report for psychologist reference.
+Generate a structured HTML report for psychologist reference.
 Input Format:
 json
 Copy
 Edit
 {
-  "assessment_name": "PHQ-9 | GAD-7 | ASRS-5",
+  "assessment_name": "",
+  "full_name": <patient's name>,
+  "gender" : <Male/Female/Others>,
+  "age": int
   "responses": {
-    "q1": int,
-    "q2": int,
-    "..."
+    "q1": answer,
+    "q2": answer,
+    "...": answer
   }
 }
 Processing Steps:
-Step 1: Scoring & Classification
+Step 1: Scoring & Classification Example (use scoring according to the questionnaire you are using)
 PHQ-9 (Depression) Scoring:
 
 0-4: Minimal depression
@@ -41,102 +45,188 @@ GAD-7 (Anxiety) Scoring:
 5-9: Mild anxiety
 10-14: Moderate anxiety (flag)
 15-21: Severe anxiety (flag)
-ASRS-5 (ADHD) Scoring:
 
-If 4+ answers score 4 ("Very often"), flag for ADHD traits
+
 Step 2: Risk & Urgency Assessment
 Self-harm or suicidal thoughts (PHQ-9, Q9): If score ≥ 1 → Flag for high-risk assessment.
-Severe cases (PHQ-9 ≥ 15, GAD-7 ≥ 15, ASRS-5 flagged): Recommend psychologist intervention.
-Mild/Moderate cases: Suggest monitoring & self-care strategies.
+
+
 Output Format:
 JSON (For Database Storage)
 json
 Copy
 Edit
 {
-  "score": <calculated_score>,
-  "severity": "<Minimal/Mild/Moderate/Moderately Severe/Severe>",
-  "flagged": true,
-  "self_harm_risk": <true/false>,
-  "recommendations": [
-    "<short insight on next steps>"
-  ]
+    "score": <calculated_score>,
+    "severity": "<Minimal/Mild/Moderate/Moderately Severe/Severe>",
+     "self_harm_risk": <true/false>,
+    "recommendations": "<short insight on next steps> like which questionnaire should the psychologist test further. how to begin with clinical interview if there is a need. how to monitor and what therapies are recommended.",
+"summary": "short summary of all the above score,severity, self harm risk, recommendations"
+    
+  }
 }
+  
+Output HTML Report
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Assessment Report</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2E3440;
+            color: #D8DEE9;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background-color: #3B4252;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            max-width: 900px;
+        }
+        h1, h3 {
+            text-align: center;
+            color: #88C0D0;
+            margin-top: 30px;
+        }
+        .section-title {
+            color: #81A1C1;
+            border-bottom: 2px solid #88C0D0;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .info-row p {
+            flex: 1;
+            margin-right: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #434C5E;
+            color: #D8DEE9;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #4C566A;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #5E81AC;
+            color: #ECEFF4;
+        }
+        ul {
+            background-color: #434C5E;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        .generated-by {
+            text-align: center;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assessment Report</h1>
+        <p class="generated-by"><i>Generated by Sentio: Assess. Advise. Assist.</i></p>
 
-Output LaTeX Report
-latex
-Copy
-Edit
-\\documentclass{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage{graphicx}
-\\usepackage{geometry}
-\\usepackage{hyperref}
-\\geometry{a4paper, margin=1in}
+        <h3 class="section-title">Patient Information</h3>
+        <div class="info-row">
+            <p><strong>Name:</strong> full_name </p> // this should be patient's name
+            <p><strong>Age:</strong> age </p> // patient's age
+        </div>
+        <div class="info-row">
+            <p><strong>Gender:</strong>gender </p> // patient's gender
+            <p><strong>Email :</strong>contact_info.email </p> // patient's email - dont create any other column
+        </div>
 
-\\begin{document}
+        <h3 class="section-title">PHQ-9 Responses</h3>
+        <table>
+            <tr>
+                <th>Question</th>
+                <th>Answer</th>
+                <th>Score</th>
+            </tr>
+            <tr><td>Little interest or pleasure in doing things?</td><td>Several days</td><td>2</td></tr>
+            <tr><td>Feeling down, depressed, or hopeless?</td><td>More than half the days</td><td>3</td></tr>
+            <tr><td>Trouble falling asleep, staying asleep, or sleeping too much?</td><td>Several days</td><td>1</td></tr>
+            <tr><td>Feeling tired or having little energy?</td><td>Several days</td><td>2</td></tr>
+            <tr><td>Poor appetite or overeating?</td><td>Several days</td><td>1</td></tr>
+            <tr><td>Feeling bad about yourself, or that you are a failure?</td><td>More than half the days</td><td>3</td></tr>
+            <tr><td>Trouble concentrating on things?</td><td>Several days</td><td>2</td></tr>
+            <tr><td>Moving or speaking slowly, or being restless?</td><td>Not at all</td><td>0</td></tr>
+            <tr><td>Thoughts of self-harm or suicide?</td><td>Several days</td><td>1</td></tr>
+        </table>
 
-\\title{Mental Health Screening Report}
-\\author{Generated by AI Mental Health Assistant}
-\\date{\\today}
-\\maketitle
+        <h3 class="section-title">Score and Interpretation</h3>
+        <div class="info-row">
+            <p><strong>Total Score:</strong> <value></p>
+            <p><strong>Severity Level:</strong> <value></p>
+        </div>
 
-\\section*{Patient Information}
-\\textbf{User ID:} 12345 \\\\
-\\textbf{Date of Assessment:} 2025-02-21 \\\\
-\\textbf{Questionnaire:} PHQ-9 (Depression) \\\\
+        <h3 class="section-title">Risk & Urgency Assessment</h3>
+        <ul>
+            <li><strong>Self-Harm Risk:</strong> Yes/No, Why?</li>
+            <li><strong>Urgent Intervention Needed:</strong> Yes/No, Why?</li>
+        </ul>
 
-\\section*{PHQ-9 Responses}
-\\begin{tabular}{|c|c|}
-\\hline
-\\textbf{Question} & \\textbf{Response (0-3)} \\\\
-\\hline
-1. Little interest or pleasure in doing things? & 2 \\\\
-2. Feeling down, depressed, or hopeless? & 3 \\\\
-3. Trouble falling asleep, staying asleep, or sleeping too much? & 1 \\\\
-4. Feeling tired or having little energy? & 2 \\\\
-5. Poor appetite or overeating? & 1 \\\\
-6. Feeling bad about yourself, or that you are a failure? & 3 \\\\
-7. Trouble concentrating on things? & 2 \\\\
-8. Moving or speaking slowly, or being restless? & 0 \\\\
-9. Thoughts of self-harm or suicide? & 1 \\\\
-\\hline
-\\end{tabular}
+        <h3 class="section-title">Insights & Recommendations</h3>
+        <ul>
+            <li>Moderate-to-severe depressive symptoms detected.</li>
+            <li>Self-harm risk is present; patient should be monitored.</li>
+            <li>Psychologist review is strongly recommended.</li>
+            <li>Suggested coping strategies: Mindfulness, structured daily routine, social engagement.</li>
+        </ul>
+    </div>
+</body>
+</html>
 
-\\section*{Score and Interpretation}
-\\textbf{Total Score:} 15 \\\\
-\\textbf{Severity Level:} Moderately Severe Depression \\\\
 
-\\section*{Risk \\& Urgency Assessment}
-\\textbf{Self-Harm Risk:} Yes (Score ≥ 1 on Q9) \\\\
-\\textbf{Urgent Intervention Needed:} No, but monitoring recommended \\\\
-
-\\section*{Insights \\& Recommendations}
-\\begin{itemize}
-  \\item Moderate-to-severe depressive symptoms detected.
-  \\item Self-harm risk is present; patient should be monitored.
-  \\item Psychologist review is strongly recommended.
-  \\item Suggested coping strategies: Mindfulness, structured daily routine, social engagement.
-\\end{itemize}
-
-\\textit{Note: This screening is not a diagnostic tool. Please consult a licensed psychologist for a full assessment.}
-
-\\end{document}`
-})
+`
+});
 
 const generationConfig = {
-  temperature: 0.7,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 65536,
-  responseMimeType: "text/plain"
-}
+    temperature: 0.7,
+    topP: 0.95,
+    topK: 64,
+    maxOutputTokens: 65536,
+    responseMimeType: "text/plain"
+};
 
-async function run() {
-  const chatSession = model.startChat({ generationConfig })
 
-  const result = await chatSession.sendMessage("INSERT_INPUT_HERE")
-  console.log(result.response.text())
-}
+const analyzeAssessment = async (assessmentData) => {
+  const chatSession = model.startChat({ generationConfig });
 
-run()
+  const result = await chatSession.sendMessage(JSON.stringify(assessmentData));
+  let responseText = await result.response.text();
+
+  responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+  const match = responseText.match(/\{[\s\S]*?\}/);
+  const jsonResponse = match ? match[0] : '{}';
+  const analysisResult = JSON.parse(jsonResponse);
+
+  const htmlStart = responseText.indexOf('<!DOCTYPE html>');
+  const htmlResponse = htmlStart !== -1
+    ? responseText.substring(htmlStart).trim()
+    : '';
+
+  return { analysisResult, htmlResponse };
+};
+
+module.exports = analyzeAssessment;

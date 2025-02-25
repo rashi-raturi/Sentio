@@ -3,7 +3,7 @@ const router = express.Router();
 const create_assessment = require('../services/assessment_creation.js');
 const sendEmail = require('../services/email.js');
 const sql = require("../config/db.js");
-const { getAssignmentByID } = require("../controllers/assessments.js");
+const { getAssignmentByID, updateAssessment } = require("../controllers/assessments.js");
 
 router.post("/generate-assessment", async (req, res) => {
     const { assessment_name, patient_id, patient_name, patient_email, user_id } = req.body
@@ -65,23 +65,20 @@ router.get("/:id", async (req, res) => {
         const score = assessment[0].score
 
         if (score) {
-            return res.render("Thanks", { patient_name: patient[0].full_name, user_mail: psychologist[0].email })
+            return res.render("thanks", { patient_name: patient[0].full_name, user_mail: psychologist[0].email })
         }
 
         const assessmentForm = await create_assessment(assessment[0].assessment_name)
 
-        res.render("assessment", { title: assessmentForm.assessment_name, description: assessmentForm.description, questions: assessmentForm.questions })
+        res.render("assessment", { title: assessmentForm.assessment_name, description: assessmentForm.description, questions: assessmentForm.questions, assessmentId:id })
     } catch (error) {
         console.error("Error retrieving assessment: ", error)
         res.status(500).json({ message: "Error retrieving assessment: ", error: error.message })
     }
 })
 
-// Handle Form Submission
-router.post("/submit", (req, res) => {
-    console.log("Form Data:", req.body)
-    res.send("Form submitted successfully!")
-})
+
+router.post("/submit/:id", updateAssessment);
 
 
 router.get("/details/:id", getAssignmentByID)
