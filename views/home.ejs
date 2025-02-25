@@ -20,9 +20,12 @@
         
         <ul class="list-group" id="patientList">
             <% patients.forEach(patient => { %>
-            <li class="list-group-item list-group-item-action" data-gender="<%= patient.gender %>">
+            <li class="list-group-item list-group-item-action" data-gender="<%= patient.gender.toLowerCase() %>" data-diagnosis="<%= patient.diagnosis.toLowerCase() %>">
+                <button class="btn badge badge-secondary badge-pill btn-sm mr-2" onclick="showPatientDetails('<%= patient.full_name %>', '<%= patient.contact_info.email %>', '<%= patient.contact_info.phone %>', '<%= patient.date_of_birth %>', '<%= patient.gender %>', '<%= patient.diagnosis %>')">
+                    <i class="fas fa-info-circle">?</i>
+                </button>
                 <a href="/patients/details/<%= patient.id %>" class="text-decoration-none text-light">
-                    <span><%= patient.full_name %> <span class="diagnosis">(<%= patient.diagnosis %>)</span></span>
+                    <span><%= patient.full_name %> </span>
                 </a>
                 <div>
                     <button class="btn btn-primary btn-sm" onclick="openModal('<%= patient.id %>', '<%= patient.full_name %>', '<%= patient.contact_info.email %>')">Send Assessment</button>
@@ -153,7 +156,34 @@
         </div>
     </div>
 
+    <!-- Patient Details Modal -->
+    <div class="modal fade" id="patientDetailsModal" tabindex="-1" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="patientDetailsModalLabel">Patient Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Name:</strong> <span id="patientDetailName"></span></p>
+                    <p><strong>Age:</strong> <span id="patientDetailAge"></span></p>
+                    <p><strong>Gender:</strong> <span id="patientDetailGender"></span></p>
+                    <p><strong>Diagnosis:</strong> <span id="patientDetailDiagnosis"></span></p>
+                    <p><strong>Email:</strong> <span id="patientDetailEmail"></span></p>
+                    <p><strong>Phone:</strong> <span id="patientDetailPhone"></span></p>
+                    <p id="patientDetailDOBContainer" style="display: none;"><strong>Date of Birth:</strong> <span id="patientDetailDOB"></span></p>
+                </div>
+                <div class="modal-footer"></div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
@@ -220,7 +250,7 @@
             const patients = document.querySelectorAll("#patientList .list-group-item");
 
             patients.forEach(patient => {
-                const patientDiagnosis = patient.querySelector(".diagnosis").textContent.toLowerCase();
+                const patientDiagnosis = patient.getAttribute("data-diagnosis").toLowerCase();
                 const patientGender = patient.getAttribute("data-gender").toLowerCase();
                 if ((diagnosis === "" || patientDiagnosis.includes(diagnosis)) && (gender === "" || patientGender === gender)) {
                     patient.style.display = "";
@@ -266,6 +296,28 @@
             alert(data.message);
             $('#addPatientModal').modal('hide');
             location.reload();
+        }
+
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDifference = today.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function showPatientDetails(name, email, phone, dob, gender, diagnosis) {
+            document.getElementById("patientDetailName").textContent = name;
+            document.getElementById("patientDetailEmail").textContent = email;
+            document.getElementById("patientDetailPhone").textContent = phone;
+            document.getElementById("patientDetailDOB").textContent = dob;
+            document.getElementById("patientDetailAge").textContent = calculateAge(dob);
+            document.getElementById("patientDetailGender").textContent = gender;
+            document.getElementById("patientDetailDiagnosis").textContent = diagnosis;
+            $('#patientDetailsModal').modal('show');
         }
     </script>
 </body>
