@@ -5,17 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Assessment</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #2E3440; color: #D8DEE9; }
-        .card { background-color: #3B4252; border-radius: 10px; }
-        .form-control, .form-check-input { background-color: #4C566A; color: #D8DEE9; border: 1px solid #D8DEE9; }
-        .btn-primary { background-color: #81A1C1; border-color: #81A1C1; }
-        .btn-primary:hover { background-color: #5E81AC; border-color: #5E81AC; }
-        .form-label { font-weight: bold; }
-        .form-check-label { margin-left: 5px; }
-        .form-range { background-color: #4C566A; }
-        .description { margin-bottom: 1rem; }
-    </style>
+    <link href="/css/assessment.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -59,34 +49,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        document.querySelector('#dynamic-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const responses = [];
+        import {submission} from "/js/assessment.js"
 
-            formData.forEach((value, key) => {
-                const labelEl = document.querySelector(`label[for="${key}"]`);
-                const questionLabel = labelEl ? labelEl.innerText : '';
-                responses.push({ question: questionLabel, answer: value });
-            });
-
-            const assessmentId = document.getElementById('assessment-id').value;
-            fetch(`/assessments/submit/${assessmentId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    assessment_id: assessmentId,
-                    responses
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
+        submission()
     </script>
 </body>
 </html>

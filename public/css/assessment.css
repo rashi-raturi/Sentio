@@ -1,0 +1,42 @@
+body {
+    background-color: #2E3440;
+    color: #D8DEE9;
+}
+
+.card {
+    background-color: #3B4252;
+    border-radius: 10px;
+}
+
+.form-control,
+.form-check-input {
+    background-color: #4C566A;
+    color: #D8DEE9;
+    border: 1px solid #D8DEE9;
+}
+
+.btn-primary {
+    background-color: #81A1C1;
+    border-color: #81A1C1;
+}
+
+.btn-primary:hover {
+    background-color: #5E81AC;
+    border-color: #5E81AC;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-check-label {
+    margin-left: 5px;
+}
+
+.form-range {
+    background-color: #4C566A;
+}
+
+.description {
+    margin-bottom: 1rem;
+}

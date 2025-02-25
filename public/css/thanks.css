@@ -1,0 +1,29 @@
+body {
+    background: linear-gradient(135deg, #2E3440, #4C566A);
+    color: #D8DEE9;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+    padding: 20px;
+}
+h1 {
+    color: #81A1C1;
+    font-size: 2.5rem;
+    margin-bottom: 50px; 
+    color: #88C0D0; 
+}
+p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+.contact-link {
+    color: #81A1C1;
+    text-decoration: underline;
+}
+.contact-link:hover {
+    color: #5E81AC;
+}

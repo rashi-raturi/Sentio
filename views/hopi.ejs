@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOPI Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2E3440;
+            color: #D8DEE9;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background-color: #3B4252;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            max-width: 900px;
+        }
+        h1, h3 {
+            text-align: center;
+            color: #88C0D0;
+            margin-top: 30px;
+        }
+        .section-title {
+            color: #81A1C1;
+            border-bottom: 2px solid #88C0D0;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea {
+            background-color: #ECEFF4;
+            color: #2E3440;
+            border: 1px solid #4C566A;
+            border-radius: 5px;
+            width: 100%;
+            padding: 8px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HOPI Form</h1>
+        <form id="hopiForm">
+            <div id="formContainer">
+                <h3 class="section-title">Patient Information</h3>
+                <label>Name:</label>
+                <input type="text" name="name">
+
+                <label>Age:</label>
+                <input type="text" name="age">
+
+                <label>Gender:</label>
+                <input type="text" name="gender">
+
+                <label>Marital Status:</label>
+                <input type="text" name="marital_status">
+
+                <label>Education:</label>
+                <input type="text" name="education">
+
+                <label>Occupation:</label>
+                <input type="text" name="occupation">
+
+                <label>Religion:</label>
+                <input type="text" name="religion">
+
+                <h3 class="section-title">Presenting Complaint</h3>
+                <textarea rows="3" name="presenting_complaint"></textarea>
+
+                <h3 class="section-title">History of Present Illness</h3>
+                <textarea rows="4" name="history_present_illness"></textarea>
+
+                <h3 class="section-title">Past History (Psychiatric/Medical)</h3>
+                <textarea rows="3" name="past_history"></textarea>
+
+                <h3 class="section-title">Family History</h3>
+                <textarea rows="3" name="family_history"></textarea>
+
+                <h3 class="section-title">Personal History</h3>
+                <label>Childhood (Birth, Development, Temperament, Schooling, Social Adjustment):</label>
+                <textarea rows="3" name="childhood_history"></textarea>
+
+                <h3 class="section-title">Adulthood</h3>
+                <label>Occupational History:</label>
+                <textarea rows="2" name="occupational_history"></textarea>
+
+                <label>Social Activity:</label>
+                <textarea rows="2" name="social_activity"></textarea>
+
+                <label>Religious History:</label>
+                <textarea rows="2" name="religious_history"></textarea>
+
+                <label>Pre-Morbid Personality:</label>
+                <textarea rows="2" name="pre_morbid_personality"></textarea>
+
+                <label>Marital/Sexual History:</label>
+                <textarea rows="2" name="marital_sexual_history"></textarea>
+
+                <label>Substance Use History (Type/Duration/Amount/Last Use):</label>
+                <textarea rows="3" name="substance_use_history"></textarea>
+
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </div>
+        </form>
+
+        <div id="reportContainer" class="hidden">
+            <h3 class="section-title">Submitted Report</h3>
+            <p id="reportContent"></p>
+            <button id="editButton" class="btn btn-warning mt-3">Edit</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('hopiForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData(event.target);
+            let reportText = "";
+            
+            formData.forEach((value, key) => {
+                reportText += `<strong>${key.replace(/_/g, ' ')}:</strong> ${value}<br>`;
+            });
+            
+            document.getElementById('reportContent').innerHTML = reportText;
+            document.getElementById('formContainer').classList.add('hidden');
+            document.getElementById('reportContainer').classList.remove('hidden');
+        });
+
+        document.getElementById('editButton').addEventListener('click', function() {
+            document.getElementById('formContainer').classList.remove('hidden');
+            document.getElementById('reportContainer').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
