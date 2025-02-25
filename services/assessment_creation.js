@@ -15,6 +15,8 @@ const model = genAI.getGenerativeModel({
 - Each question should have an appropriate **response type** (e.g., multiple-choice, scale, text).  
 - Ensure medical accuracy and adherence to standard psychological practices.  
 - Return the response **strictly in valid JSON format**.
+- **do not use slider or scale** as a type use multiple choice only. 
+- redundancy should not be there.
 
 **Input:**  
 Assessment Name: "{assessment_name}"
@@ -39,6 +41,8 @@ Assessment Name: "{assessment_name}"
         }
     ]
 }
+
+
 \`\`\`
 `
 })
@@ -68,6 +72,7 @@ const create_assessment = async (assessment_name) => {
 
     await redis.set(cacheKey, JSON.stringify(assessmentData), 'EX', 3600) 
 
+    console.warn(assessmentData)
     return assessmentData
 }
 

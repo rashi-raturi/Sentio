@@ -5,57 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Details</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #2E3440;
-            color: #D8DEE9;
-        }
-        .container {
-            background-color: #3B4252;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .card {
-            background-color: #4C566A;
-            color: #D8DEE9;
-            margin-bottom: 20px;
-        }
-        .card-header {
-            background-color: #81A1C1;
-            color: #2E3440;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-primary {
-            background-color: #81A1C1;
-            border-color: #81A1C1;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        .btn-primary:hover {
-            background-color: #5E81AC;
-            border-color: #5E81AC;
-        }
-        .small-text {
-            font-size: 0.8em;
-            color: #395059; 
-        }
-        .list-group-item {
-            background-color: #4C566A;
-            border: none;
-            color: #D8DEE9;
-        }
-        .list-group-item + .list-group-item {
-            border-top: 1px solid #3B4252;
-        }
-    </style>
+    <link rel="stylesheet" href="\css\patient.css">
 </head>
 <body>
     <div class="container mt-5">
         <h2 class="text-center mb-4"><%= patient.full_name %></h2>
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">
                     <%= patient.diagnosis %>
                     <span class="ml-1 small-text"><span id="age"></span><%= patient.gender === 'male' ? ' M' : ' F' %> </span>
@@ -69,25 +25,34 @@
                     </button>
                 </div>
             </div>
-            
         </div>
 
-
         <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Assessments</h3>
+            </div>
             <div class="card-body">
             <% if (assessments.length > 0) { %>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-            <h3 class="mb-0">Assessments</h3>
-            </div>
-            <ul class="list-group"></ul>
+            
+            <ul class="list-group">
             <% assessments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).forEach(assessment => { %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
                 <a href="/assessments/details/<%= assessment.id %>" style="color: #D8DEE9; text-decoration: none;">
-                    <strong><%= assessment.assessment_name.toUpperCase() %></strong>
+                    <strong style="text-decoration: underline;"><%= assessment.assessment_name.toUpperCase() %></strong>
+                    <ul style="font-size: 0.9em;">
+                        <% if (assessment.summary) { %>
+                            <% assessment.summary.split('. ').forEach(line => { %>
+                                <li><%= line %></li>
+                            <% }) %>
+                        <% } else { %>
+                            <li>Assessment not taken</li>
+                        <% } %>
+                    </ul>
                 </a>
             </div>
-            <span class="badge badge-primary badge-pill" style="font-size: 1em; background-color: #81A1C1; color: #2E3440;"><%= assessment.score %></span>
+            <span id="score-pill" class="badge badge-primary badge-pill" style="font-size: 1em; color: #2E3440; background-color: <%= assessment.color %>;"><%= assessment.score %></span>
+
             </li>
             <% }) %>
             </ul>
@@ -97,25 +62,34 @@
             </div>
         </div>
 
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3 class="mb-0">Assessment Scores</h3>
+            </div>
+            <div class="card-body">
+                <div id="bar-chart"></div>
+            </div>
+        </div>
+
         <a href="/patients" class="btn btn-primary mt-4">Back to Patients</a>
 
         <!-- Schedule Modal -->
         <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"></div>
+                    <div class="modal-header">
                         <h5 class="modal-title" id="scheduleModalLabel">Schedule a Google Meet</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="scheduleForm"></form>
+                        <form id="scheduleForm">
                             <div class="form-group">
                                 <label for="meetingDate">Date</label>
                                 <input type="date" class="form-control" id="meetingDate" required>
                             </div>
-                            <div class="form-group"></div>
+                            <div class="form-group">
                                 <label for="meetingTime">Time</label>
                                 <input type="time" class="form-control" id="meetingTime" required>
                             </div>
@@ -134,50 +108,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://apis.google.com/js/api.js"></script>
-    <script>
-        function scheduleMeet() {
-            const date = document.getElementById('meetingDate').value;
-            const time = document.getElementById('meetingTime').value;
-            if (date && time) {
-                const dateTime = new Date(`${date}T${time}`);
-                const endTime = new Date(dateTime.getTime() + 30 * 60000); // 30 minutes meeting
+    <script src="https://d3js.org/d3.v6.min.js"></script>
 
-                const event = {
-                    'summary': 'Therapy Session - <%= patient.full_name %>',
-                    'description': 'Google Meet session with <%= patient.full_name %>.',
-                    'start': dateTime.toISOString(),
-                    'end': endTime.toISOString(),
-                    'attendees': [
-                        {'email': '<%= patient.contact_info.email %>'}
-                    ]
-                };
+    <script type="module">
+        import { createBarChart } from '/js/charts.js';
+        import {calculateAge, scheduleMeet} from '/js/patient.js'
 
-                const eventDetails = encodeURIComponent(JSON.stringify(event));
-                const calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${event.summary}&dates=${dateTime.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endTime.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${event.description}&add=${event.attendees[0].email}`;
-
-                window.open(calendarUrl, '_blank');
-                $('#scheduleModal').modal('hide');
-            } else {
-                alert('Please select both date and time.');
-            }
-        }
-
-        function calculateAge(dob) {
-            const birthDate = new Date(dob);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDifference = today.getMonth() - birthDate.getMonth();
-            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
+        window.scheduleMeet = scheduleMeet
+    
         document.addEventListener('DOMContentLoaded', function() {
-            const dob = '<%= patient.date_of_birth %>';
-            const age = calculateAge(dob);
-            document.getElementById('age').textContent = age;
-        });
+        const dob = '<%= patient.date_of_birth %>';
+        const age = calculateAge(dob);
+        document.getElementById('age').textContent = age;
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const avgAssessmentScore = <%- JSON.stringify(avgScore) %>;
+        createBarChart(avgAssessmentScore);
+    });
+
     </script>
 </body>
 </html>

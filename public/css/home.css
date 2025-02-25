@@ -1,0 +1,63 @@
+body {
+    background-color: #2E3440;
+    color: #D8DEE9;
+}
+.container {
+    background-color: #3B4252;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.list-group-item {
+    background-color: #4C566A;
+    color: #D8DEE9;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.list-group-item:hover {
+    background-color: #4C566A;
+    color: #D8DEE9;
+}
+.modal-header {
+    background-color: #81A1C1;
+    color: #2E3440;
+}
+.modal-footer .btn-primary {
+    background-color: #81A1C1;
+    border-color: #81A1C1;
+}
+.modal-footer .btn-secondary {
+    background-color: #4C566A;
+    border-color: #4C566A;
+}
+.modal-content {
+    background-color: #3B4252;
+    color: #D8DEE9;
+}
+.form-control {
+    background-color: #4C566A;
+    color: #D8DEE9;
+    border: 1px solid #D8DEE9;
+}
+.form-control::placeholder {
+    color: #D8DEE9;
+}
+.modal-backdrop {
+    background-color: rgba(46, 52, 64, 0.8);
+}
+.diagnosis {
+    font-size: 0.8em;
+    color: #A3BE8C;
+}
+
+.btn-primary{
+    background-color: #83b0de;
+    border: none;
+}
+
+.btn-success{
+    background-color: #71865e;
+    border: none;
+}

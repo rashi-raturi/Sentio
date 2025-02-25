@@ -78,9 +78,8 @@ router.get("/:id", async (req, res) => {
 })
 
 
-router.post("/submit/:id", updateAssessment);
-
-
+router.post("/submit/:id", updateAssessment)
 router.get("/details/:id", getAssignmentByID)
+
 
 module.exports = router

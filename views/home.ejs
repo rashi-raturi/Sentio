@@ -5,72 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #2E3440;
-            color: #D8DEE9;
-        }
-        .container {
-            background-color: #3B4252;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .list-group-item {
-            background-color: #4C566A;
-            color: #D8DEE9;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .list-group-item:hover {
-            background-color: #4C566A;
-            color: #D8DEE9;
-        }
-        .modal-header {
-            background-color: #81A1C1;
-            color: #2E3440;
-        }
-        .modal-footer .btn-primary {
-            background-color: #81A1C1;
-            border-color: #81A1C1;
-        }
-        .modal-footer .btn-secondary {
-            background-color: #4C566A;
-            border-color: #4C566A;
-        }
-        .modal-content {
-            background-color: #3B4252;
-            color: #D8DEE9;
-        }
-        .form-control {
-            background-color: #4C566A;
-            color: #D8DEE9;
-            border: 1px solid #D8DEE9;
-        }
-        .form-control::placeholder {
-            color: #D8DEE9;
-        }
-        .modal-backdrop {
-            background-color: rgba(46, 52, 64, 0.8);
-        }
-        .diagnosis {
-            font-size: 0.8em;
-            color: #A3BE8C;
-        }
-
-        .btn-primary{
-            background-color: #83b0de;
-            border: none;
-        }
-
-        .btn-success{
-            background-color: #71865e;
-            border: none;
-        }
-
-    </style>
+    <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -241,25 +176,27 @@
             const assessmentName = document.getElementById("assessmentName").value;
             const patientEmail = document.getElementById("patientEmail").value;
             if (!assessmentName) {
-                alert("Please enter an assessment name.");
-                return;
+            alert("Please enter an assessment name.");
+            return;
             }
 
+            setTimeout(() => {
+            document.getElementById("successMessage").style.display = "block";
+            setTimeout(() => {
+                closeModal();
+                document.getElementById("successMessage").style.display = "none";
+            }, 2000);
+            }, 2000);
+
             const response = await fetch("/assessments/generate-assessment", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ assessment_name: assessmentName, patient_id: selectedPatientId, patient_email: patientEmail, patient_name: document.getElementById("patientName").textContent.split(": ")[1], user_id: "<%= user.id %>" })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ assessment_name: assessmentName, patient_id: selectedPatientId, patient_email: patientEmail, patient_name: document.getElementById("patientName").textContent.split(": ")[1], user_id: "<%= user.id %>" })
             });
 
             const data = await response.json();
-            if (response.ok) {
-                document.getElementById("successMessage").style.display = "block";
-                setTimeout(() => {
-                    closeModal();
-                    document.getElementById("successMessage").style.display = "none";
-                }, 2000);
-            } else {
-                alert(data.message);
+            if (!response.ok) {
+            alert(data.message);
             }
         }
 

@@ -7,7 +7,7 @@ const auth = require('./routes/auth')
 const patients = require('./routes/patients')
 const assessments = require('./routes/assessments')
 const authCheck = require('./middlewares/authcheck')
-const sql = require('./config/db')
+
 
 const app = express()
 app.use(express.json())

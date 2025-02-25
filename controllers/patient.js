@@ -44,12 +44,18 @@ const getPatientById = async (req, res) => {
     try {
         const patientResult = await sql`SELECT * FROM patients WHERE id = ${id}`
         const assessmentResult = await sql`SELECT * FROM assessments WHERE patient_id = ${id}`
+        const avgAssessmentScore = await sql`
+            SELECT assessment_name, AVG(score) as avg_score
+            FROM assessments
+            WHERE patient_id = ${id}
+            GROUP BY assessment_name
+        `;
 
         if (patientResult.length === 0) {
             return res.status(404).json({ message: "Patient not found" })
         }
 
-        res.render('patient', { patient: patientResult[0], title: '', assessments: assessmentResult })
+        res.render('patient', { patient: patientResult[0], title: '', assessments: assessmentResult, avgScore: avgAssessmentScore })
 
     } catch (error) {
         console.error("Error retrieving patient:", error)

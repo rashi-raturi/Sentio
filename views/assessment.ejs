@@ -38,9 +38,10 @@
                                 </div>
                             <% }); %>
                         <% } else if (question.type === "scale") { %>
-                            <input type="range" class="form-range" id="q<%= index %>" name="q<%= index %>" min="<%= question.scale_min %>" max="<%= question.scale_max %>" required>
+                            <input type="range" class="form-range" id="q<%= index %>" name="q<%= index %>" min="<%= question.scale_min %>" max="<%= question.scale_max %>" required oninput="document.getElementById('q<%= index %>_value').innerText = this.value + '%'">
                             <div class="d-flex justify-content-between text-light">
                                 <small><%= question.scale_label_min %></small>
+                                <small id="q<%= index %>_value"><%= question.scale_min %>%</small>
                                 <small><%= question.scale_label_max %></small>
                             </div>
                         <% } else if (question.type === "text") { %>
