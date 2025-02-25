@@ -6,6 +6,7 @@ require('dotenv').config()
 const auth = require('./routes/auth')
 const patients = require('./routes/patients')
 const assessments = require('./routes/assessments')
+const information = require('./routes/information')
 const authCheck = require('./middlewares/authcheck')
 
 
@@ -23,6 +24,7 @@ app.set("views", path.join(__dirname, "views"))
 app.use('/auth', auth)
 app.use('/patients', patients)
 app.use("/assessments", assessments)
+app.use("/information", information)
 
 app.get('/', authCheck, (req, res) => {
     res.redirect('/patients')

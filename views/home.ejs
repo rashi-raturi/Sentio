@@ -83,7 +83,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="addPatient()">Add Patient</button>
+                    <button type="button" class="btn btn-primary" onclick="addPatient('<%=user.id%>')">Add Patient</button>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="sendAssessment()">Send</button>
+                    <button type="button" class="btn btn-primary" onclick="sendAssessment('<%= user.id %>')">Send</button>
                 </div>
             </div>
         </div>
@@ -175,7 +175,7 @@
                     <p><strong>Phone:</strong> <span id="patientDetailPhone"></span></p>
                     <p id="patientDetailDOBContainer" style="display: none;"><strong>Date of Birth:</strong> <span id="patientDetailDOB"></span></p>
                 </div>
-                <div class="modal-footer"></div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -186,139 +186,18 @@
     <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        let selectedPatientId = null;
-        let selectedPatientEmail = null;
-
-        function openModal(id, name, email) {
-            selectedPatientId = id;
-            selectedPatientEmail = email;
-            document.getElementById("patientName").textContent = "For: " + name;
-            document.getElementById("patientEmail").value = email;
-            $('#assessmentModal').modal('show');
-        }
-
-        function closeModal() {
-            $('#assessmentModal').modal('hide');
-        }
-
-        async function sendAssessment() {
-            const assessmentName = document.getElementById("assessmentName").value;
-            const patientEmail = document.getElementById("patientEmail").value;
-            if (!assessmentName) {
-            alert("Please enter an assessment name.");
-            return;
-            }
-
-            setTimeout(() => {
-            document.getElementById("successMessage").style.display = "block";
-            setTimeout(() => {
-                closeModal();
-                document.getElementById("successMessage").style.display = "none";
-            }, 2000);
-            }, 2000);
-
-            const response = await fetch("/assessments/generate-assessment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ assessment_name: assessmentName, patient_id: selectedPatientId, patient_email: patientEmail, patient_name: document.getElementById("patientName").textContent.split(": ")[1], user_id: "<%= user.id %>" })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-            alert(data.message);
-            }
-        }
-
-        function filterPatients() {
-            const searchTerm = document.getElementById("searchBar").value.toLowerCase();
-            const patients = document.querySelectorAll("#patientList .list-group-item");
-
-            patients.forEach(patient => {
-                const name = patient.querySelector("span").textContent.toLowerCase();
-                if (name.includes(searchTerm)) {
-                    patient.style.display = "";
-                } else {
-                    patient.style.display = "none";
-                }
-            });
-        }
-
-        function applyFilter() {
-            const diagnosis = document.getElementById("diagnosisFilter").value.toLowerCase();
-            const gender = document.getElementById("genderFilter").value.toLowerCase();
-            const patients = document.querySelectorAll("#patientList .list-group-item");
-
-            patients.forEach(patient => {
-                const patientDiagnosis = patient.getAttribute("data-diagnosis").toLowerCase();
-                const patientGender = patient.getAttribute("data-gender").toLowerCase();
-                if ((diagnosis === "" || patientDiagnosis.includes(diagnosis)) && (gender === "" || patientGender === gender)) {
-                    patient.style.display = "";
-                } else {
-                    patient.style.display = "none";
-                }
-            });
-
-            $('#filterModal').modal('hide');
-        }
-
-        function clearFilter() {
-            document.getElementById("diagnosisFilter").value = "";
-            document.getElementById("genderFilter").value = "";
-            const patients = document.querySelectorAll("#patientList .list-group-item");
-            patients.forEach(patient => {
-                patient.style.display = "";
-            });
-            $('#filterModal').modal('hide');
-        }
-
-        async function addPatient() {
-            const name = document.getElementById("patientNameInput").value;
-            const email = document.getElementById("patientEmailInput").value;
-            const phone = document.getElementById("patientPhoneInput").value;
-            const dateOfBirth = document.getElementById("patientDOBInput").value;
-            const contactInfo = { email, phone };
-            const diagnosis = document.getElementById("patientDiagnosisInput").value;
-            const gender = document.getElementById("patientGenderInput").value;
-
-            if (!name || !email || !gender || !dateOfBirth || !phone) {
-                alert("Please fill in all mandatory fields (Name, Email, Gender, Date of Birth, and Phone).");
-                return;
-            }
-
-            const response = await fetch("/patients/add-patient", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ psychologist_id: "<%= user.id %>", full_name: name, date_of_birth: dateOfBirth, gender, contact_info: contactInfo, diagnosis })
-            });
-
-            const data = await response.json();
-            alert(data.message);
-            $('#addPatientModal').modal('hide');
-            location.reload();
-        }
-
-        function calculateAge(dob) {
-            const birthDate = new Date(dob);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDifference = today.getMonth() - birthDate.getMonth();
-            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
-        function showPatientDetails(name, email, phone, dob, gender, diagnosis) {
-            document.getElementById("patientDetailName").textContent = name;
-            document.getElementById("patientDetailEmail").textContent = email;
-            document.getElementById("patientDetailPhone").textContent = phone;
-            document.getElementById("patientDetailDOB").textContent = dob;
-            document.getElementById("patientDetailAge").textContent = calculateAge(dob);
-            document.getElementById("patientDetailGender").textContent = gender;
-            document.getElementById("patientDetailDiagnosis").textContent = diagnosis;
-            $('#patientDetailsModal').modal('show');
-        }
+    <script type="module">
+        import { openModal, closeModal, sendAssessment, filterPatients, applyFilter, clearFilter, addPatient, calculateAge, showPatientDetails } from "/js/home.js";
+        
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.sendAssessment = sendAssessment;
+        window.filterPatients = filterPatients;
+        window.applyFilter = applyFilter;
+        window.clearFilter = clearFilter;
+        window.addPatient = addPatient;
+        window.calculateAge = calculateAge;
+        window.showPatientDetails = showPatientDetails;
     </script>
 </body>
 </html>
