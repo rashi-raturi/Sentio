@@ -1,4 +1,5 @@
 const sql = require("../config/db.js")
+const {generateReport} = require("../services/hopi_summary.js")
 
 const createPatient = async (req, res) => {
     let { psychologist_id, full_name, date_of_birth, gender, contact_info, diagnosis } = req.body
@@ -55,7 +56,11 @@ const getPatientById = async (req, res) => {
             return res.status(404).json({ message: "Patient not found" })
         }
 
-        res.render('patient', { patient: patientResult[0], title: '', assessments: assessmentResult, avgScore: avgAssessmentScore })
+        const hopiData = await sql`SELECT hopi FROM information WHERE patient_id = ${id}`;
+        const hopi = hopiData.length > 0 ? hopiData[0].hopi : null;
+
+
+        res.render('patient', { patient: patientResult[0], title: '', assessments: assessmentResult, avgScore: avgAssessmentScore, hopi})
 
     } catch (error) {
         console.error("Error retrieving patient:", error)

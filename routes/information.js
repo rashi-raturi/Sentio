@@ -1,6 +1,6 @@
 const express = require("express")
 const authMiddleware = require('../middlewares/authentication')
-const {fillHopi, updateHopi} = require('../controllers/information')
+const {fillHopi, updateHopi, showReport} = require('../controllers/information')
 const sql = require('../config/db')
 
 
@@ -21,5 +21,7 @@ router.route("/:id/hopi").get(async (req, res) => {
 })
     .post(authMiddleware, fillHopi)
     .put(authMiddleware, updateHopi)
+
+router.route("/:id/report").get(authMiddleware, showReport)
 
 module.exports = router

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Assessment</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/assessment.css">
+    <link rel="stylesheet" href="/css/assessment.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -49,9 +49,36 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        import {submission} from "/js/assessment.js"
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('#dynamic-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const responses = [];
 
-        submission()
+                formData.forEach((value, key) => {
+                    const labelEl = document.querySelector(`label[for="${key}"]`);
+                    const questionLabel = labelEl ? labelEl.innerText : '';
+                    responses.push({ question: questionLabel, answer: value });
+                });
+
+                const assessmentId = document.getElementById('assessment-id').value;
+                fetch(`/assessments/submit/${assessmentId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assessment_id: assessmentId,
+                        responses
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
     </script>
 </body>
 </html>
