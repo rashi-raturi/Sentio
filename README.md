@@ -1,10 +1,10 @@
 # Sentio
 
-Sentio is a web application designed to assist psychologists by automating tasks and facilitating AI-assisted diagnosis. It enables psychologists to generate patient assessments dynamically, send them via links or QR codes, and receive results efficiently.
+Sentio is a web application designed to assist psychologists by automating tasks and facilitating AI-assisted diagnosis. It enables psychologists to generate patient assessments dynamically, send them via links, and receive results efficiently. Additionally, it thoroughly analyzes patient-filled assessments and generates detailed reports. Sentio also incorporates the History of Present Illness(HOPI) in psychology/psychiatry questionnaire to enhance diagnostic accuracy.
 
 ## Features
 
-- **User Authentication**: Secure login and signup functionality.
+- **User Authentication**: Secure login and signup functionality for psychologist.
 - **Patient Management**: View, add, update, and delete patient records.
 - **Assessment Generation**: AI-generated dynamic assessments based on psychologist input.
 - **Assessment Submission**: Patients can fill assessments via a generated link.
@@ -13,7 +13,7 @@ Sentio is a web application designed to assist psychologists by automating tasks
 
 ## Tech Stack
 
-- **Backend**: Node.js (Express.js), PostgreSQL (Supabase), Sequelize ORM, Redis (Upstash)
+- **Backend**: Node.js (Express.js), PostgreSQL (Supabase), Redis (Upstash)
 - **Frontend**: EJS, Bootstrap, JavaScript
 - **AI Integration**: Google Generative AI API
 - **Authentication**: JSON Web Tokens (JWT), bcrypt
@@ -106,9 +106,15 @@ Sentio is a web application designed to assist psychologists by automating tasks
 - `POST /assessments/generate` - Generate an assessment
 - `POST /assessments/submit/:id` - Submit assessment responses
 
-## License
+## Future Steps
 
-This project is licensed under the MIT License.
+- **Enhance AI capabilities**: Improve assessment generation and analysis with more advanced AI models.
+- **Data visualization**: Implement charts and reports for better insights.
+- **User roles and permissions**: Introduce different access levels for psychologists and assistants.
+- **Mobile support**: Optimize the UI for mobile devices.
+- **Integration with EHR systems**: Connect with electronic health records for seamless data management.
+- **Expand AI Chatbot Features**: Enable conversational AI to provide therapy suggestions, track patient progress, and offer mental health resources.
+
 
 ---
 
