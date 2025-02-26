@@ -106,6 +106,12 @@ Sentio is a web application designed to assist psychologists by automating tasks
 - `POST /assessments/generate` - Generate an assessment
 - `POST /assessments/submit/:id` - Submit assessment responses
 
+### HOPI & Reports
+- `GET /information/:id/hopi` - View HOPI form for a patient
+- `POST /information/:id/hopi` - Fill HOPI form for a patient
+- `PUT /information/:id/hopi` - Update HOPI form for a patient
+- `GET /information/:id/report` - View AI-generated report for a patient
+
 ## Future Steps
 
 - **Enhance AI capabilities**: Improve assessment generation and analysis with more advanced AI models.
@@ -114,6 +120,8 @@ Sentio is a web application designed to assist psychologists by automating tasks
 - **Mobile support**: Optimize the UI for mobile devices.
 - **Integration with EHR systems**: Connect with electronic health records for seamless data management.
 - **Expand AI Chatbot Features**: Enable conversational AI to provide therapy suggestions, track patient progress, and offer mental health resources.
+- **Multilingual Support**: Implement language options for better accessibility.
+- **HIPAA Compliance**: Ensure data privacy and security meet medical industry standards.
 
 
 ---
